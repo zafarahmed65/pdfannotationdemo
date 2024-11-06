@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Foxit PDF SDK For Web</title>
+  <link rel="stylesheet" href="public/lib/PDFViewCtrl.css" />
+</head>
+<body>
+  <div id="pdf-viewer"></div>
+  <script src="public/lib/license-key.js"></script>
+  <script src="public/lib/PDFViewCtrl.full.js"></script>
+  <script>
+    var { PDFViewer } = PDFViewCtrl;
+
+    var pdfViewer = new PDFViewer({
+      libPath: 'public/lib',
+      jr: { licenseSN, licenseKey },
+    });
+    pdfViewer.init('#pdf-viewer');
+
+    // Listen for messages from the parent window and open PDF once
+    window.addEventListener('message', function (event) {
+      if (event.data instanceof ArrayBuffer) {
+        pdfViewer.openPDFByFile(event.data).then(() => {
+          console.log("PDF loaded successfully in iframe");
+        }).catch((error) => {
+          console.error("Error loading PDF:", error);
+        });
+      }
+    });
+  </script>
+</body>
+</html>
